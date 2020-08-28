@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,7 +13,6 @@ import 'package:ChatApp/widget/loading.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
 import 'main.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -224,8 +222,8 @@ class HomeScreenState extends State<HomeScreen> {
     });
 
     await FirebaseAuth.instance.signOut();
-    await googleSignIn.disconnect();
-    await googleSignIn.signOut();
+    googleSignIn.disconnect();
+    googleSignIn.signOut();
 
     this.setState(() {
       isLoading = false;

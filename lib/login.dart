@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:ChatApp/forgotPassword.dart';
+import 'package:ChatApp/register.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -158,16 +160,11 @@ class LoginScreenState extends State<LoginScreen> {
       isLoading = true;
     });
 
-    GoogleSignInAccount googleUser = await googleSignIn.signIn();
-    GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-
-    final AuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-
-    User firebaseUser =
-        (await firebaseAuth.signInWithCredential(credential)).user;
+    User firebaseUser = (await firebaseAuth.signInWithEmailAndPassword(
+      email: emailInputController.text,
+      password: pwdInputController.text,
+    ))
+        .user;
 
     if (firebaseUser != null) {
       // Check is already sign up
@@ -177,23 +174,24 @@ class LoginScreenState extends State<LoginScreen> {
           .get();
       final List<DocumentSnapshot> documents = result.docs;
       if (documents.length == 0) {
+        Fluttertoast.showToast(msg: "Register First");
         // Update data to server if new user
-        FirebaseFirestore.instance
-            .collection('users')
-            .doc(firebaseUser.uid)
-            .set({
-          'nickname': firebaseUser.displayName,
-          'photoUrl': firebaseUser.photoURL,
-          'id': firebaseUser.uid,
-          'createdAt': DateTime.now().millisecondsSinceEpoch.toString(),
-          'chattingWith': null
-        });
+        // FirebaseFirestore.instance
+        //     .collection('users')
+        //     .doc(firebaseUser.uid)
+        //     .set({
+        //   'nickname': firebaseUser.displayName,
+        //   'photoUrl': firebaseUser.photoURL,
+        //   'id': firebaseUser.uid,
+        //   'createdAt': DateTime.now().millisecondsSinceEpoch.toString(),
+        //   'chattingWith': null
+        // });
 
-        // Write data to local
-        currentUser = firebaseUser;
-        await prefs.setString('id', currentUser.uid);
-        await prefs.setString('nickname', currentUser.displayName);
-        await prefs.setString('photoUrl', currentUser.photoURL);
+        // // Write data to local
+        // currentUser = firebaseUser;
+        // await prefs.setString('id', currentUser.uid);
+        // await prefs.setString('nickname', currentUser.displayName);
+        // await prefs.setString('photoUrl', currentUser.photoURL);
       } else {
         // Write data to local
         await prefs.setString('id', documents[0].data()['id']);
@@ -229,168 +227,271 @@ class LoginScreenState extends State<LoginScreen> {
         ),
         centerTitle: true,
       ),
-      body: Column(
-        children: <Widget>[
-          ClipPath(
-            // ClipPath is used to clip the child in a custom shape
-            clipper: BottomClipper(),
-            // here is the custom clipper for bottom cut shape
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.only(top: 40, bottom: 30),
-              margin: EdgeInsets.only(top: 30, left: 20, right: 20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black,
-                      offset: Offset(1, 2),
-                      spreadRadius: 1.0,
-                      blurRadius: 5.0)
-                ],
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Column(
-                children: <Widget>[
-                  // Email input
-                  Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.email), labelText: 'Email'),
-                      controller: emailInputController,
-                      keyboardType: TextInputType.emailAddress,
-                      validator: emailValidator,
-                    ),
-                  ),
-                  // Password input
-                  Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.lock),
-                        labelText: 'Password',
-                        suffixIcon: Icon(Icons.remove_red_eye),
-                      ),
-                      controller: pwdInputController,
-                      obscureText: true,
-                      validator: pwdValidator,
-                    ),
-                  ),
-                  // Forgot password
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 18.0),
-                      child: InkWell(
-                        // InkWell widget makes the widget clickable and provide call back for touch events
-                        onTap: () {
-                          Navigator.pushNamed(context, '/forgotPassword');
-                        },
-                        child: Text(
-                          'Forgot Password?',
-                          textAlign: TextAlign.end,
-                          style: TextStyle(
-                            color: Color(0xffFBB034),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Login using mobile number
-                  Container(
-                    margin: EdgeInsets.only(top: 20),
-                    child: InkWell(
-                      onTap: () {
-                        // Navigator.pushNamed(context, '/phone');
-                      },
-                      child: RichText(
-                        // RichText is used to styling a particular text span in a text by grouping them in one widget
-                        text: TextSpan(
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          text: 'Login using ',
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: 'Mobile Number and OTP',
-                              style: TextStyle(
-                                decoration: TextDecoration.underline,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Submit button for login details
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      InkWell(
-                        onTap: () {
-                          // if (_loginFormKey.currentState.validate()) {
-                          //   FirebaseAuth.instance
-                          //       .signInWithEmailAndPassword(
-                          //           email: emailInputController.text,
-                          //           password: pwdInputController.text)
-                          //       .then((currentUser) => Firestore.instance
-                          //           .collection("users")
-                          //           .document(currentUser.uid)
-                          //           .get()
-                          //           .then((DocumentSnapshot result) =>
-                          //               Navigator.pushReplacement(
-                          //                   context,
-                          //                   MaterialPageRoute(
-                          //                       builder: (context) => HomePage(
-                          //                             title: "Home",
-                          //                             uid: currentUser.uid,
-                          //                           ))))
-                          //           .catchError((err) => print(err)))
-                          //       .catchError((err) => print(err));
-                          // }
-                        },
-                        child: Container(
-                          margin: EdgeInsets.only(right: 20, top: 10),
-                          decoration: BoxDecoration(
-                              color: Color(0xffFBB034),
-                              borderRadius: BorderRadius.circular(30)),
-                          padding: EdgeInsets.all(8),
-                          child: Icon(
-                            Icons.navigate_next,
-                            size: 40,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
+      body: SingleChildScrollView(
+        child: Container(
+          //height: MediaQuery.of(context).size.height,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xffFBB034), Color(0xffF8B313)],
+            ),
+          ),
+          child: Column(
+            children: <Widget>[
+              ClipPath(
+                // ClipPath is used to clip the child in a custom shape
+                clipper: BottomClipper(),
+                // here is the custom clipper for bottom cut shape
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.only(top: 40, bottom: 30),
+                  margin: EdgeInsets.only(top: 30, left: 20, right: 20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black,
+                          offset: Offset(1, 2),
+                          spreadRadius: 1.0,
+                          blurRadius: 5.0)
                     ],
-                  )
-                ],
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Column(
+                    children: <Widget>[
+                      // Email input
+                      Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.email),
+                              labelText: 'Email'),
+                          controller: emailInputController,
+                          keyboardType: TextInputType.emailAddress,
+                          validator: emailValidator,
+                        ),
+                      ),
+                      // Password input
+                      Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.lock),
+                            labelText: 'Password',
+                            suffixIcon: Icon(Icons.remove_red_eye),
+                          ),
+                          controller: pwdInputController,
+                          obscureText: true,
+                          validator: pwdValidator,
+                        ),
+                      ),
+                      // Forgot password
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 18.0),
+                          child: InkWell(
+                            // InkWell widget makes the widget clickable and provide call back for touch events
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ForgotPasswordPage()));
+                            },
+                            child: Text(
+                              'Forgot Password?',
+                              textAlign: TextAlign.end,
+                              style: TextStyle(
+                                color: Color(0xffFBB034),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      // Login using mobile number
+                      Container(
+                        margin: EdgeInsets.only(top: 20),
+                        child: InkWell(
+                          onTap: () {
+                            // Navigator.pushNamed(context, '/phone');
+                          },
+                          child: RichText(
+                            // RichText is used to styling a particular text span in a text by grouping them in one widget
+                            text: TextSpan(
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              text: 'Login using ',
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: 'Mobile Number and OTP',
+                                  style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      // Submit button for login details
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          InkWell(
+                            onTap: () {
+                              //if (_loginFormKey.currentState.validate()) {
+                              handleEmailSignIn();
+                              //}
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(right: 20, top: 10),
+                              decoration: BoxDecoration(
+                                  color: Color(0xffFBB034),
+                                  borderRadius: BorderRadius.circular(30)),
+                              padding: EdgeInsets.all(8),
+                              child: Icon(
+                                Icons.navigate_next,
+                                size: 40,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
-          FlatButton(
-            onPressed: handleSignIn,
-            child: Text(
-              'SIGN IN WITH GOOGLE',
-              style: TextStyle(fontSize: 16.0),
-            ),
-            color: Color(0xffdd4b39),
-            highlightColor: Color(0xffff7f7f),
-            splashColor: Colors.transparent,
-            textColor: Colors.white,
-            padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
-          ),
+              ClipPath(
+                clipper:
+                    TopClipper(), // Custom Clipper for top clipping the social login menu box
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.only(top: 50, bottom: 50),
+                  margin: EdgeInsets.only(left: 20, right: 20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black,
+                          offset: Offset(1, 2),
+                          spreadRadius: 1.0,
+                          blurRadius: 5.0),
+                    ],
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "Or",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Color(0xff898989),
+                        ),
+                      ),
+                      Text(
+                        "Login with Social Media",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Color(0xff898989),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          // Facebook login
+                          // Padding(
+                          //   padding: const EdgeInsets.all(10.0),
+                          //   child: Material(
+                          //     child: InkWell(
+                          //       onTap: () {
+                          //         facebookLogin(context).then((user) {
+                          //           if (user != null) {
+                          //             print('Logged in successfully.');
+                          //             Navigator.pushNamed(context, '/home');
+                          //             isFacebookLoginIn = true;
+                          //           } else {
+                          //             print('Error while Login.');
+                          //           }
+                          //         });
+                          //       },
+                          //       child: Container(
+                          //         child: ClipRRect(
+                          //           borderRadius: BorderRadius.circular(20.0),
+                          //           child: Image.asset('assets/fb-icon.png',
+                          //               width: 80.0, height: 80.0),
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
+                          // Google login
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Material(
+                              child: FlatButton(
+                                onPressed: handleSignIn,
+                                child: Text(
+                                  'SIGN IN WITH GOOGLE',
+                                  style: TextStyle(fontSize: 16.0),
+                                ),
+                                color: Color(0xffdd4b39),
+                                highlightColor: Color(0xffff7f7f),
+                                splashColor: Colors.transparent,
+                                textColor: Colors.white,
+                                padding:
+                                    EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              // Register
+              Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RegisterPage()),
+                    );
+                  },
+                  child: RichText(
+                    text: TextSpan(
+                      text: "Don't have an account? ",
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: "Click here to signup",
+                          style:
+                              TextStyle(decoration: TextDecoration.underline),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
 
-          // Loading
-          Positioned(
-            child: isLoading ? const Loading() : Container(),
+              // Loading
+              Center(
+                child: isLoading ? const Loading() : Container(),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -409,6 +510,21 @@ class BottomClipper extends CustomClipper<Path> {
   }
 
   // we don't need to render it again and again as UI renders
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+}
+
+class TopClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+
+    path.lineTo(size.width, 50);
+    path.lineTo(size.width, size.height + 10);
+    path.lineTo(0, size.height + 10);
+    return path;
+  }
+
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
