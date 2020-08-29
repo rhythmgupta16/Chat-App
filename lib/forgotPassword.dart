@@ -45,7 +45,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Color(0xffFBB034), Color(0xffF8B313)],
+                colors: [Color(0xff9C27B0), Color(0xff03A9F4)],
               ),
             ),
             child: Form(
@@ -57,7 +57,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     elevation: 0,
                     title: Text(
                       "FORGOT PASSWORD",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xffE1BEE7),
+                      ),
                     ),
                     centerTitle: true,
                     leading: new IconButton(
@@ -116,7 +119,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                   style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold)),
-                              color: Color(0xffFBB034),
+                              color: Color(0xffFF5722),
                               textColor: Colors.white,
                               onPressed: () async {
                                 sendPasswordResetEmail(

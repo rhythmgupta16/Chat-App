@@ -67,6 +67,7 @@ flutter:
      - images/cry.gif
      - images/love.gif
      - images/tease.gif
+     - images/logo.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

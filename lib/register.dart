@@ -61,39 +61,39 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        title: Text(
-          "REGISTER",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        leading: new IconButton(
-          icon: new Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        // Actions are identified as buttons which are added at the right of App Bar
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-          )
-        ],
-      ),
       body: SingleChildScrollView(
         child: Container(
+          height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Color(0xffFBB034), Color(0xffF8B313)],
+              colors: [Color(0xff9C27B0), Color(0xff03A9F4)],
             ),
           ),
           child: Form(
             key: _registerFormKey,
             child: Column(
               children: <Widget>[
+                AppBar(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  title: Text(
+                    "LOGIN",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xffE1BEE7),
+                    ),
+                  ),
+                  centerTitle: true,
+                  // Actions are identified as buttons which are added at the right of App Bar
+                  actions: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.asset('images/logo.png'),
+                    )
+                  ],
+                ),
                 Container(
                   width: MediaQuery.of(context).size.width,
                   padding: EdgeInsets.only(top: 40, bottom: 30),
@@ -178,7 +178,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold)),
-                              color: Color(0xffFBB034),
+                              color: Color(0xffFF5722),
                               textColor: Colors.white,
                               onPressed: () async {
                                 if (_registerFormKey.currentState.validate()) {

@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
 import 'const.dart';
 import 'login.dart';
 
@@ -18,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: themeColor,
       ),
-      home: LoginScreen(title: 'CHAT App'),
+      home: LoginScreen(title: 'Chat App'),
       debugShowCheckedModeBanner: false,
     );
   }

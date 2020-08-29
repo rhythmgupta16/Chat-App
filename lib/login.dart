@@ -201,25 +201,37 @@ class LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.title,
-          style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-      ),
       body: SingleChildScrollView(
         child: Container(
-          //height: MediaQuery.of(context).size.height,
+          height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Color(0xffFBB034), Color(0xffF8B313)],
+              colors: [Color(0xff9C27B0), Color(0xff03A9F4)],
             ),
           ),
           child: Column(
             children: <Widget>[
+              AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                title: Text(
+                  "LOGIN",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xffE1BEE7),
+                  ),
+                ),
+                centerTitle: true,
+                // Actions are identified as buttons which are added at the right of App Bar
+                actions: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.asset('images/logo.png'),
+                  )
+                ],
+              ),
               ClipPath(
                 // ClipPath is used to clip the child in a custom shape
                 clipper: BottomClipper(),
@@ -286,7 +298,7 @@ class LoginScreenState extends State<LoginScreen> {
                               'Forgot Password?',
                               textAlign: TextAlign.end,
                               style: TextStyle(
-                                color: Color(0xffFBB034),
+                                color: Color(0xff536DFE),
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
                               ),
@@ -334,7 +346,7 @@ class LoginScreenState extends State<LoginScreen> {
                             child: Container(
                               margin: EdgeInsets.only(right: 20, top: 10),
                               decoration: BoxDecoration(
-                                  color: Color(0xffFBB034),
+                                  color: Color(0xffE1BEE7),
                                   borderRadius: BorderRadius.circular(30)),
                               padding: EdgeInsets.all(8),
                               child: Icon(
@@ -378,12 +390,8 @@ class LoginScreenState extends State<LoginScreen> {
                           color: Color(0xff898989),
                         ),
                       ),
-                      Text(
-                        "Login with Social Media",
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Color(0xff898989),
-                        ),
+                      SizedBox(
+                        height: 15,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
