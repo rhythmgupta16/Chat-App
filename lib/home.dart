@@ -172,7 +172,7 @@ class HomeScreenState extends State<HomeScreen> {
                     Container(
                       child: Icon(
                         Icons.cancel,
-                        color: primaryColor,
+                        color: Color(0xff212121),
                       ),
                       margin: EdgeInsets.only(right: 10.0),
                     ),
@@ -193,7 +193,7 @@ class HomeScreenState extends State<HomeScreen> {
                     Container(
                       child: Icon(
                         Icons.check_circle,
-                        color: primaryColor,
+                        color: Color(0xff212121),
                       ),
                       margin: EdgeInsets.only(right: 10.0),
                     ),
@@ -255,14 +255,16 @@ class HomeScreenState extends State<HomeScreen> {
                       children: <Widget>[
                         Icon(
                           choice.icon,
-                          color: primaryColor,
+                          color: Color(0xff212121),
                         ),
                         Container(
                           width: 10.0,
                         ),
                         Text(
                           choice.title,
-                          style: TextStyle(color: primaryColor),
+                          style: TextStyle(
+                            color: Color(0xff757575),
+                          ),
                         ),
                       ],
                     ));
@@ -271,6 +273,7 @@ class HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+      backgroundColor: Color(0xffBBDEFB),
       body: WillPopScope(
         child: Stack(
           children: <Widget>[
@@ -313,7 +316,8 @@ class HomeScreenState extends State<HomeScreen> {
     if (document.data()['id'] == currentUserId) {
       return Container();
     } else {
-      return Container(
+      return Card(
+        elevation: 3,
         child: FlatButton(
           child: Row(
             children: <Widget>[
@@ -350,7 +354,9 @@ class HomeScreenState extends State<HomeScreen> {
                       Container(
                         child: Text(
                           'Nickname: ${document.data()['nickname']}',
-                          style: TextStyle(color: primaryColor),
+                          style: TextStyle(
+                            color: Color(0xff212121),
+                          ),
                         ),
                         alignment: Alignment.centerLeft,
                         margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
@@ -358,7 +364,9 @@ class HomeScreenState extends State<HomeScreen> {
                       Container(
                         child: Text(
                           'About me: ${document.data()['aboutMe'] ?? 'Not available'}',
-                          style: TextStyle(color: primaryColor),
+                          style: TextStyle(
+                            color: Color(0xff757575),
+                          ),
                         ),
                         alignment: Alignment.centerLeft,
                         margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
@@ -379,7 +387,6 @@ class HomeScreenState extends State<HomeScreen> {
                           peerAvatar: document.data()['photoUrl'],
                         )));
           },
-          color: greyColor2,
           padding: EdgeInsets.fromLTRB(25.0, 10.0, 25.0, 10.0),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),

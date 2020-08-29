@@ -1,7 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ChatApp/home.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 
@@ -26,6 +30,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String aboutMe = '';
   String photoUrl = '';
   bool isLoading = false;
+  bool imageSel = false;
 
   File avatarImageFile;
 
@@ -56,6 +61,68 @@ class _RegisterPageState extends State<RegisterPage> {
     } else {
       return null;
     }
+  }
+
+  Future getImage() async {
+    imageSel = true;
+    ImagePicker imagePicker = ImagePicker();
+    PickedFile pickedFile;
+
+    pickedFile = await imagePicker.getImage(source: ImageSource.gallery);
+
+    File image = File(pickedFile.path);
+
+    if (image != null) {
+      setState(() {
+        avatarImageFile = image;
+        isLoading = true;
+      });
+    }
+  }
+
+  Future uploadFile() async {
+    String fileName = id;
+    StorageReference reference = FirebaseStorage.instance.ref().child(fileName);
+    StorageUploadTask uploadTask = reference.putFile(avatarImageFile);
+    StorageTaskSnapshot storageTaskSnapshot;
+    uploadTask.onComplete.then((value) {
+      if (value.error == null) {
+        storageTaskSnapshot = value;
+        storageTaskSnapshot.ref.getDownloadURL().then((downloadUrl) {
+          photoUrl = downloadUrl;
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(id)
+              .update({'photoUrl': photoUrl}).then((data) async {
+            await prefs.setString('photoUrl', photoUrl);
+            setState(() {
+              isLoading = false;
+            });
+            Fluttertoast.showToast(msg: "Upload success");
+          }).catchError((err) {
+            setState(() {
+              isLoading = false;
+            });
+            Fluttertoast.showToast(msg: err.toString());
+          });
+        }, onError: (err) {
+          setState(() {
+            isLoading = false;
+          });
+          Fluttertoast.showToast(msg: 'This file is not an image');
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        Fluttertoast.showToast(msg: 'This file is not an image');
+      }
+    }, onError: (err) {
+      setState(() {
+        isLoading = false;
+      });
+      Fluttertoast.showToast(msg: err.toString());
+    });
   }
 
   @override
@@ -111,6 +178,69 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   child: Column(
                     children: <Widget>[
+                      // Avatar
+                      Container(
+                        child: Center(
+                          child: Stack(
+                            children: <Widget>[
+                              (avatarImageFile == null)
+                                  ? (photoUrl != ''
+                                      ? Material(
+                                          child: CachedNetworkImage(
+                                            placeholder: (context, url) =>
+                                                Container(
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2.0,
+                                                valueColor:
+                                                    AlwaysStoppedAnimation<
+                                                        Color>(Colors.amber),
+                                              ),
+                                              width: 90.0,
+                                              height: 90.0,
+                                              padding: EdgeInsets.all(20.0),
+                                            ),
+                                            imageUrl: photoUrl,
+                                            width: 90.0,
+                                            height: 90.0,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(45.0)),
+                                          clipBehavior: Clip.hardEdge,
+                                        )
+                                      : Icon(
+                                          Icons.account_circle,
+                                          size: 90.0,
+                                          color: Colors.grey,
+                                        ))
+                                  : Material(
+                                      child: Image.file(
+                                        avatarImageFile,
+                                        width: 90.0,
+                                        height: 90.0,
+                                        fit: BoxFit.cover,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(45.0)),
+                                      clipBehavior: Clip.hardEdge,
+                                    ),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.camera_alt,
+                                  color: Colors.black.withOpacity(0.5),
+                                ),
+                                onPressed: getImage,
+                                padding: EdgeInsets.all(30.0),
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.black,
+                                iconSize: 30.0,
+                              ),
+                            ],
+                          ),
+                        ),
+                        width: double.infinity,
+                        margin: EdgeInsets.all(20.0),
+                      ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(18, 0, 18, 0),
                         child: TextFormField(
@@ -183,13 +313,16 @@ class _RegisterPageState extends State<RegisterPage> {
                               onPressed: () async {
                                 if (_registerFormKey.currentState.validate()) {
                                   if (pwdInputController.text ==
-                                      confirmPwdInputController.text) {
+                                          confirmPwdInputController.text &&
+                                      imageSel) {
                                     User firebaseUser = (await firebaseAuth
                                             .createUserWithEmailAndPassword(
                                       email: emailInputController.text,
                                       password: pwdInputController.text,
                                     ))
                                         .user;
+                                    id = firebaseUser.uid;
+                                    uploadFile();
                                     Firestore.instance
                                         .collection("users")
                                         .document(firebaseUser.uid)
@@ -228,23 +361,43 @@ class _RegisterPageState extends State<RegisterPage> {
                                       confirmPwdInputController.clear();
                                     }).catchError((err) => print(err));
                                   } else {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: Text("Error"),
-                                            content: Text(
-                                                "The passwords do not match"),
-                                            actions: <Widget>[
-                                              FlatButton(
-                                                child: Text("Close"),
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                              )
-                                            ],
-                                          );
-                                        });
+                                    if (!imageSel) {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text("Error"),
+                                              content:
+                                                  Text("Please upload image"),
+                                              actions: <Widget>[
+                                                FlatButton(
+                                                  child: Text("Close"),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                )
+                                              ],
+                                            );
+                                          });
+                                    } else {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text("Error"),
+                                              content: Text(
+                                                  "The passwords do not match"),
+                                              actions: <Widget>[
+                                                FlatButton(
+                                                  child: Text("Close"),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                )
+                                              ],
+                                            );
+                                          });
+                                    }
                                   }
                                 }
                               }),
