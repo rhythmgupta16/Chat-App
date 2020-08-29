@@ -16,7 +16,7 @@ class ChatSettings extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'SETTINGS',
+          'Settings',
           style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -240,9 +240,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                     child: Text(
                       'Nickname',
                       style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.bold,
-                          color: primaryColor),
+                          fontWeight: FontWeight.bold, color: primaryColor),
                     ),
                     margin: EdgeInsets.only(left: 10.0, bottom: 5.0, top: 10.0),
                   ),
@@ -252,7 +250,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                           .copyWith(primaryColor: primaryColor),
                       child: TextField(
                         decoration: InputDecoration(
-                          hintText: 'Sweetie',
+                          hintText: 'Abbie',
                           contentPadding: EdgeInsets.all(5.0),
                           hintStyle: TextStyle(color: greyColor),
                         ),
@@ -271,9 +269,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                     child: Text(
                       'About me',
                       style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.bold,
-                          color: primaryColor),
+                          fontWeight: FontWeight.bold, color: primaryColor),
                     ),
                     margin: EdgeInsets.only(left: 10.0, top: 30.0, bottom: 5.0),
                   ),
@@ -283,7 +279,8 @@ class SettingsScreenState extends State<SettingsScreen> {
                           .copyWith(primaryColor: primaryColor),
                       child: TextField(
                         decoration: InputDecoration(
-                          hintText: 'Fun, like travel and play PES...',
+                          hintText:
+                              'I’m a people person. Love making friends...',
                           contentPadding: EdgeInsets.all(5.0),
                           hintStyle: TextStyle(color: greyColor),
                         ),

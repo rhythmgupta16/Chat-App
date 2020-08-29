@@ -1,15 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ChatApp/home.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:async';
 import 'dart:io';
-import 'const.dart';
 
 class RegisterPage extends StatefulWidget {
   RegisterPage({Key key}) : super(key: key);
@@ -43,69 +37,6 @@ class _RegisterPageState extends State<RegisterPage> {
     pwdInputController = new TextEditingController();
     confirmPwdInputController = new TextEditingController();
     super.initState();
-  }
-
-  Future getImage() async {
-    ImagePicker imagePicker = ImagePicker();
-    PickedFile pickedFile;
-
-    pickedFile = await imagePicker.getImage(source: ImageSource.gallery);
-
-    File image = File(pickedFile.path);
-
-    if (image != null) {
-      setState(() {
-        avatarImageFile = image;
-        isLoading = true;
-      });
-    }
-    uploadFile();
-  }
-
-  Future uploadFile() async {
-    String fileName = id;
-    StorageReference reference = FirebaseStorage.instance.ref().child(fileName);
-    StorageUploadTask uploadTask = reference.putFile(avatarImageFile);
-    StorageTaskSnapshot storageTaskSnapshot;
-    uploadTask.onComplete.then((value) {
-      if (value.error == null) {
-        storageTaskSnapshot = value;
-        storageTaskSnapshot.ref.getDownloadURL().then((downloadUrl) {
-          photoUrl = downloadUrl;
-          FirebaseFirestore.instance.collection('users').doc(id).update({
-            'nickname': nickname,
-            'aboutMe': aboutMe,
-            'photoUrl': photoUrl
-          }).then((data) async {
-            await prefs.setString('photoUrl', photoUrl);
-            setState(() {
-              isLoading = false;
-            });
-            Fluttertoast.showToast(msg: "Upload success");
-          }).catchError((err) {
-            setState(() {
-              isLoading = false;
-            });
-            Fluttertoast.showToast(msg: err.toString());
-          });
-        }, onError: (err) {
-          setState(() {
-            isLoading = false;
-          });
-          Fluttertoast.showToast(msg: 'This file is not an image');
-        });
-      } else {
-        setState(() {
-          isLoading = false;
-        });
-        Fluttertoast.showToast(msg: 'This file is not an image');
-      }
-    }, onError: (err) {
-      setState(() {
-        isLoading = false;
-      });
-      Fluttertoast.showToast(msg: err.toString());
-    });
   }
 
   String emailValidator(String value) {
@@ -147,7 +78,6 @@ class _RegisterPageState extends State<RegisterPage> {
         actions: <Widget>[
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Image.asset('assets/logo.png'),
           )
         ],
       ),
@@ -182,81 +112,16 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: Column(
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          child: Center(
-                            child: Stack(
-                              children: <Widget>[
-                                (avatarImageFile == null)
-                                    ? (photoUrl != ''
-                                        ? Material(
-                                            child: CachedNetworkImage(
-                                              placeholder: (context, url) =>
-                                                  Container(
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  strokeWidth: 2.0,
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                          Color>(themeColor),
-                                                ),
-                                                width: 90.0,
-                                                height: 90.0,
-                                                padding: EdgeInsets.all(20.0),
-                                              ),
-                                              imageUrl: photoUrl,
-                                              width: 90.0,
-                                              height: 90.0,
-                                              fit: BoxFit.cover,
-                                            ),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(45.0)),
-                                            clipBehavior: Clip.hardEdge,
-                                          )
-                                        : Icon(
-                                            Icons.account_circle,
-                                            size: 90.0,
-                                            color: greyColor,
-                                          ))
-                                    : Material(
-                                        child: Image.file(
-                                          avatarImageFile,
-                                          width: 90.0,
-                                          height: 90.0,
-                                          fit: BoxFit.cover,
-                                        ),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(45.0)),
-                                        clipBehavior: Clip.hardEdge,
-                                      ),
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.camera_alt,
-                                    color: primaryColor.withOpacity(0.5),
-                                  ),
-                                  onPressed: getImage,
-                                  padding: EdgeInsets.all(30.0),
-                                  splashColor: Colors.transparent,
-                                  highlightColor: greyColor,
-                                  iconSize: 30.0,
-                                ),
-                              ],
-                            ),
-                          ),
-                          width: double.infinity,
-                          margin: EdgeInsets.all(20.0),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(18.0),
+                        padding: const EdgeInsets.fromLTRB(18, 0, 18, 0),
                         child: TextFormField(
                           decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.email), labelText: 'Name'),
+                              prefixIcon: Icon(Icons.person),
+                              labelText: 'Name'),
                           controller: firstNameInputController,
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) {
                             if (value.length < 3) {
-                              return "Please enter a valid first name.";
+                              return "Please enter a valid name.";
                             }
                           },
                         ),
@@ -338,6 +203,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                       "photoUrl": photoUrl,
                                     }).then((result) async {
                                       // Write data to local
+                                      print("Reached here");
+                                      prefs =
+                                          await SharedPreferences.getInstance();
                                       currentUser = firebaseUser;
                                       await prefs.setString(
                                           'id', currentUser.uid);

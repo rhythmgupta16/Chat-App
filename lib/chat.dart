@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -503,27 +502,27 @@ class ChatScreenState extends State<ChatScreen> {
           Row(
             children: <Widget>[
               FlatButton(
-                onPressed: () => onSendMessage('mimi1', 2),
+                onPressed: () => onSendMessage('smile', 2),
                 child: Image.asset(
-                  'images/mimi1.gif',
+                  'images/smile.gif',
                   width: 50.0,
                   height: 50.0,
                   fit: BoxFit.cover,
                 ),
               ),
               FlatButton(
-                onPressed: () => onSendMessage('mimi2', 2),
+                onPressed: () => onSendMessage('wink', 2),
                 child: Image.asset(
-                  'images/mimi2.gif',
+                  'images/wink.gif',
                   width: 50.0,
                   height: 50.0,
                   fit: BoxFit.cover,
                 ),
               ),
               FlatButton(
-                onPressed: () => onSendMessage('mimi3', 2),
+                onPressed: () => onSendMessage('angry', 2),
                 child: Image.asset(
-                  'images/mimi3.gif',
+                  'images/angry.gif',
                   width: 50.0,
                   height: 50.0,
                   fit: BoxFit.cover,
@@ -535,27 +534,27 @@ class ChatScreenState extends State<ChatScreen> {
           Row(
             children: <Widget>[
               FlatButton(
-                onPressed: () => onSendMessage('mimi4', 2),
+                onPressed: () => onSendMessage('cool', 2),
                 child: Image.asset(
-                  'images/mimi4.gif',
+                  'images/cool.gif',
                   width: 50.0,
                   height: 50.0,
                   fit: BoxFit.cover,
                 ),
               ),
               FlatButton(
-                onPressed: () => onSendMessage('mimi5', 2),
+                onPressed: () => onSendMessage('tease', 2),
                 child: Image.asset(
-                  'images/mimi5.gif',
+                  'images/tease.gif',
                   width: 50.0,
                   height: 50.0,
                   fit: BoxFit.cover,
                 ),
               ),
               FlatButton(
-                onPressed: () => onSendMessage('mimi6', 2),
+                onPressed: () => onSendMessage('cry', 2),
                 child: Image.asset(
-                  'images/mimi6.gif',
+                  'images/cry.gif',
                   width: 50.0,
                   height: 50.0,
                   fit: BoxFit.cover,
@@ -567,27 +566,27 @@ class ChatScreenState extends State<ChatScreen> {
           Row(
             children: <Widget>[
               FlatButton(
-                onPressed: () => onSendMessage('mimi7', 2),
+                onPressed: () => onSendMessage('love', 2),
                 child: Image.asset(
-                  'images/mimi7.gif',
+                  'images/love.gif',
                   width: 50.0,
                   height: 50.0,
                   fit: BoxFit.cover,
                 ),
               ),
               FlatButton(
-                onPressed: () => onSendMessage('mimi8', 2),
+                onPressed: () => onSendMessage('confused', 2),
                 child: Image.asset(
-                  'images/mimi8.gif',
+                  'images/confused.gif',
                   width: 50.0,
                   height: 50.0,
                   fit: BoxFit.cover,
                 ),
               ),
               FlatButton(
-                onPressed: () => onSendMessage('mimi9', 2),
+                onPressed: () => onSendMessage('laugh', 2),
                 child: Image.asset(
-                  'images/mimi9.gif',
+                  'images/laugh.gif',
                   width: 50.0,
                   height: 50.0,
                   fit: BoxFit.cover,

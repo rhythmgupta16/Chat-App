@@ -1,10 +1,8 @@
 import 'dart:async';
-
 import 'package:ChatApp/forgotPassword.dart';
 import 'package:ChatApp/register.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ChatApp/const.dart';
 import 'package:ChatApp/home.dart';
@@ -175,23 +173,6 @@ class LoginScreenState extends State<LoginScreen> {
       final List<DocumentSnapshot> documents = result.docs;
       if (documents.length == 0) {
         Fluttertoast.showToast(msg: "Register First");
-        // Update data to server if new user
-        // FirebaseFirestore.instance
-        //     .collection('users')
-        //     .doc(firebaseUser.uid)
-        //     .set({
-        //   'nickname': firebaseUser.displayName,
-        //   'photoUrl': firebaseUser.photoURL,
-        //   'id': firebaseUser.uid,
-        //   'createdAt': DateTime.now().millisecondsSinceEpoch.toString(),
-        //   'chattingWith': null
-        // });
-
-        // // Write data to local
-        // currentUser = firebaseUser;
-        // await prefs.setString('id', currentUser.uid);
-        // await prefs.setString('nickname', currentUser.displayName);
-        // await prefs.setString('photoUrl', currentUser.photoURL);
       } else {
         // Write data to local
         await prefs.setString('id', documents[0].data()['id']);
