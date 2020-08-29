@@ -1,16 +1,55 @@
 # ChatApp
 
-A new Flutter project.
+A Chatting Application built on Flutter!
 
-## Getting Started
+## Videos of Working
 
-This project is a starting point for a Flutter application.
+### Authentication:
 
-A few resources to get you started if this is your first Flutter project:
+- [Watch working of Authentication](https://flutter.dev/docs/get-started/codelab)
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+### Chatting:
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [Watch working of Chatting](https://flutter.dev/docs/cookbook)
+
+## Install APK
+
+- [Download and Install APK here](https://flutter.dev/docs/get-started/codelab)
+
+## Screenshots
+
+## Files
+
+### Screens
+
+#### Main.dart
+Main file.
+
+#### Login.dart
+The user can login using Email, Phone or Social Media through this screen.
+
+#### Register.dart
+The user can register using Email in this screen.
+
+#### ForgotPassword.dart
+The user can reset password using Email in this screen.
+
+#### Home.dart
+The user can view all the friends using the App and tap on anyone to open Chat. Also, the user can Log Out or open Settings Screen.
+
+#### Chat.dart
+The user can chat in this screen. The user can send and receive Messages, GIFs or Images.
+
+#### Settings.dart
+The user can change Profile Picture, Name and Description here.
+
+### Widgets
+
+#### Full_photo.dart
+Convert the image to Full Screen.
+
+#### Loading.dart
+Loading.
+
+#### Const.dart
+Colors settings.
