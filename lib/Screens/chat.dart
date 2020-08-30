@@ -338,7 +338,7 @@ class ChatScreenState extends State<ChatScreen> {
                         padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
                         width: 200.0,
                         decoration: BoxDecoration(
-                            color: Color(0xff212121),
+                            color: Color(0xff303F9F),
                             borderRadius: BorderRadius.circular(8.0)),
                         margin: EdgeInsets.only(left: 10.0),
                       )

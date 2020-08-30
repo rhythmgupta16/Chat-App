@@ -6,24 +6,22 @@ A Chatting Application built on Flutter!
 
 ### Authentication:
 
-- [Watch working of Authentication](https://flutter.dev/docs/get-started/codelab)
+- [Watch working of Authentication](https://drive.google.com/file/d/1Iw1UDVS8-QMPeChvoPPdPK4rwLV02kxv/view?usp=sharing)
 
 ### Chatting:
 
-- [Watch working of Chatting](https://flutter.dev/docs/cookbook)
+- [Watch working of Chatting](https://drive.google.com/file/d/1RkD-8VhJqq2zbYmgCHNsUKUV2jM0TzU-/view?usp=sharing)
 
 ## Install APK
 
-- [Download and Install APK here](https://flutter.dev/docs/get-started/codelab)
+- [Download and Install APK here](https://drive.google.com/file/d/1yJeuIauCL0IfN0vHclcmT4XSTcO_L7q2/view?usp=sharing)
 
 ## Screenshots
+
 
 ## Files
 
 ### Screens
-
-#### Main.dart
-Main file.
 
 #### Login.dart
 The user can login using Email, Phone or Social Media through this screen.

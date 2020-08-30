@@ -94,10 +94,8 @@ class HomeScreenState extends State<HomeScreen> {
 
   void showNotification(message) async {
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-      Platform.isAndroid
-          ? 'com.dfa.flutterchatdemo'
-          : 'com.duytq.flutterchatdemo',
-      'Flutter chat demo',
+      Platform.isAndroid ? 'com.example.ChatApp' : 'com.example.ChatApp',
+      'Chat App',
       'your channel description',
       playSound: true,
       enableVibration: true,
@@ -109,16 +107,10 @@ class HomeScreenState extends State<HomeScreen> {
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
 
     print(message);
-//    print(message['body'].toString());
-//    print(json.encode(message));
 
     await flutterLocalNotificationsPlugin.show(0, message['title'].toString(),
         message['body'].toString(), platformChannelSpecifics,
         payload: json.encode(message));
-
-//    await flutterLocalNotificationsPlugin.show(
-//        0, 'plain title', 'plain body', platformChannelSpecifics,
-//        payload: 'item x');
   }
 
   Future<bool> onBackPress() {
