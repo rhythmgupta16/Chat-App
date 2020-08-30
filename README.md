@@ -17,7 +17,10 @@ A Chatting Application built on Flutter!
 - [Download and Install APK here](https://drive.google.com/file/d/1yJeuIauCL0IfN0vHclcmT4XSTcO_L7q2/view?usp=sharing)
 
 ## Screenshots
-
+![Home](https://user-images.githubusercontent.com/41383322/91667121-d186b000-eb1f-11ea-8d9c-63560bcf9251.jpeg)
+![Chat](https://user-images.githubusercontent.com/41383322/91667122-d21f4680-eb1f-11ea-80f2-d4671afd3023.jpeg)
+![Login](https://user-images.githubusercontent.com/41383322/91667124-d2b7dd00-eb1f-11ea-9976-4bdcec426620.jpeg)
+![Register](https://user-images.githubusercontent.com/41383322/91667119-d0558300-eb1f-11ea-9489-fb0353376815.jpeg)
 
 ## Files
 
