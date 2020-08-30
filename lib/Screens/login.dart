@@ -1,15 +1,15 @@
 import 'dart:async';
-import 'package:ChatApp/forgotPassword.dart';
-import 'package:ChatApp/register.dart';
+import 'package:ChatApp/Screens/register.dart';
+import 'package:ChatApp/Widgets/loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:ChatApp/const.dart';
-import 'package:ChatApp/home.dart';
-import 'package:ChatApp/widget/loading.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'forgotPassword.dart';
+import 'home.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key key, this.title}) : super(key: key);
@@ -21,6 +21,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class LoginScreenState extends State<LoginScreen> {
+  //Intialize variables
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   SharedPreferences prefs;
@@ -32,6 +33,7 @@ class LoginScreenState extends State<LoginScreen> {
   bool isLoggedIn = false;
   User currentUser;
 
+  //Call isSignedIn() on opening app
   @override
   void initState() {
     emailInputController = new TextEditingController();
@@ -61,6 +63,7 @@ class LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  //Check if the user has signed in before
   void isSignedIn() async {
     this.setState(() {
       isLoading = true;
@@ -83,6 +86,7 @@ class LoginScreenState extends State<LoginScreen> {
     });
   }
 
+  //Google Sign In
   Future<Null> handleSignIn() async {
     prefs = await SharedPreferences.getInstance();
 
@@ -97,7 +101,6 @@ class LoginScreenState extends State<LoginScreen> {
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
-
     User firebaseUser =
         (await firebaseAuth.signInWithCredential(credential)).user;
 
@@ -151,50 +154,56 @@ class LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  //Sign In via Email
   Future<Null> handleEmailSignIn() async {
     prefs = await SharedPreferences.getInstance();
 
-    this.setState(() {
-      isLoading = true;
-    });
-
-    User firebaseUser = (await firebaseAuth.signInWithEmailAndPassword(
-      email: emailInputController.text,
-      password: pwdInputController.text,
-    ))
-        .user;
-
-    if (firebaseUser != null) {
-      // Check is already sign up
-      final QuerySnapshot result = await FirebaseFirestore.instance
-          .collection('users')
-          .where('id', isEqualTo: firebaseUser.uid)
-          .get();
-      final List<DocumentSnapshot> documents = result.docs;
-      if (documents.length == 0) {
-        Fluttertoast.showToast(msg: "Register First");
-      } else {
-        // Write data to local
-        await prefs.setString('id', documents[0].data()['id']);
-        await prefs.setString('nickname', documents[0].data()['nickname']);
-        await prefs.setString('photoUrl', documents[0].data()['photoUrl']);
-        await prefs.setString('aboutMe', documents[0].data()['aboutMe']);
-      }
-      Fluttertoast.showToast(msg: "Sign in success");
-      this.setState(() {
-        isLoading = false;
-      });
-
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  HomeScreen(currentUserId: firebaseUser.uid)));
+    if (emailInputController.text.isEmpty || pwdInputController.text.isEmpty) {
+      Fluttertoast.showToast(
+          msg: "Please fill in all details first!", textColor: Colors.yellow);
     } else {
-      Fluttertoast.showToast(msg: "Sign in fail");
       this.setState(() {
-        isLoading = false;
+        isLoading = true;
       });
+      User firebaseUser = (await firebaseAuth.signInWithEmailAndPassword(
+        email: emailInputController.text,
+        password: pwdInputController.text,
+      ))
+          .user;
+
+      if (firebaseUser != null) {
+        // Check is already sign up
+        final QuerySnapshot result = await FirebaseFirestore.instance
+            .collection('users')
+            .where('id', isEqualTo: firebaseUser.uid)
+            .get();
+
+        final List<DocumentSnapshot> documents = result.docs;
+        if (documents.length == 0) {
+          Fluttertoast.showToast(msg: "Register First");
+        } else {
+          // Write data to local
+          await prefs.setString('id', documents[0].data()['id']);
+          await prefs.setString('nickname', documents[0].data()['nickname']);
+          await prefs.setString('photoUrl', documents[0].data()['photoUrl']);
+          await prefs.setString('aboutMe', documents[0].data()['aboutMe']);
+        }
+        Fluttertoast.showToast(msg: "Sign in success");
+        this.setState(() {
+          isLoading = false;
+        });
+
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    HomeScreen(currentUserId: firebaseUser.uid)));
+      } else {
+        Fluttertoast.showToast(msg: "Sign in fail");
+        this.setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -311,7 +320,7 @@ class LoginScreenState extends State<LoginScreen> {
                         margin: EdgeInsets.only(top: 20),
                         child: InkWell(
                           onTap: () {
-                            // Navigator.pushNamed(context, '/phone');
+                            Fluttertoast.showToast(msg: "Sign in with Phone");
                           },
                           child: RichText(
                             // RichText is used to styling a particular text span in a text by grouping them in one widget
@@ -396,32 +405,6 @@ class LoginScreenState extends State<LoginScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          // Facebook login
-                          // Padding(
-                          //   padding: const EdgeInsets.all(10.0),
-                          //   child: Material(
-                          //     child: InkWell(
-                          //       onTap: () {
-                          //         facebookLogin(context).then((user) {
-                          //           if (user != null) {
-                          //             print('Logged in successfully.');
-                          //             Navigator.pushNamed(context, '/home');
-                          //             isFacebookLoginIn = true;
-                          //           } else {
-                          //             print('Error while Login.');
-                          //           }
-                          //         });
-                          //       },
-                          //       child: Container(
-                          //         child: ClipRRect(
-                          //           borderRadius: BorderRadius.circular(20.0),
-                          //           child: Image.asset('assets/fb-icon.png',
-                          //               width: 80.0, height: 80.0),
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
                           // Google login
                           Padding(
                             padding: const EdgeInsets.all(10.0),

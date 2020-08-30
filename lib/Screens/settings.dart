@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'dart:io';
-
+import 'package:ChatApp/Widgets/const.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:ChatApp/const.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,6 +31,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class SettingsScreenState extends State<SettingsScreen> {
+  //Initialize variables
   TextEditingController controllerNickname;
   TextEditingController controllerAboutMe;
 
@@ -54,6 +54,7 @@ class SettingsScreenState extends State<SettingsScreen> {
     readLocal();
   }
 
+  //Read data from Shared Preferences
   void readLocal() async {
     prefs = await SharedPreferences.getInstance();
     id = prefs.getString('id') ?? '';
@@ -68,6 +69,7 @@ class SettingsScreenState extends State<SettingsScreen> {
     setState(() {});
   }
 
+  //Select image from phone storage
   Future getImage() async {
     ImagePicker imagePicker = ImagePicker();
     PickedFile pickedFile;
@@ -85,6 +87,7 @@ class SettingsScreenState extends State<SettingsScreen> {
     uploadFile();
   }
 
+  //Upload the selected image to Firebase Storage
   Future uploadFile() async {
     String fileName = id;
     StorageReference reference = FirebaseStorage.instance.ref().child(fileName);
@@ -132,34 +135,41 @@ class SettingsScreenState extends State<SettingsScreen> {
   }
 
   void handleUpdateData() {
-    focusNodeNickname.unfocus();
-    focusNodeAboutMe.unfocus();
-
-    setState(() {
-      isLoading = true;
-    });
-
-    FirebaseFirestore.instance.collection('users').doc(id).update({
-      'nickname': nickname,
-      'aboutMe': aboutMe,
-      'photoUrl': photoUrl
-    }).then((data) async {
-      await prefs.setString('nickname', nickname);
-      await prefs.setString('aboutMe', aboutMe);
-      await prefs.setString('photoUrl', photoUrl);
+    if (controllerAboutMe.text.isEmpty || controllerNickname.text.isEmpty) {
+      Fluttertoast.showToast(
+          msg: 'Please fill all the details!',
+          textColor: Colors.red,
+          backgroundColor: Colors.white);
+    } else {
+      focusNodeNickname.unfocus();
+      focusNodeAboutMe.unfocus();
 
       setState(() {
-        isLoading = false;
+        isLoading = true;
       });
 
-      Fluttertoast.showToast(msg: "Update success");
-    }).catchError((err) {
-      setState(() {
-        isLoading = false;
-      });
+      FirebaseFirestore.instance.collection('users').doc(id).update({
+        'nickname': nickname,
+        'aboutMe': aboutMe,
+        'photoUrl': photoUrl
+      }).then((data) async {
+        await prefs.setString('nickname', nickname);
+        await prefs.setString('aboutMe', aboutMe);
+        await prefs.setString('photoUrl', photoUrl);
 
-      Fluttertoast.showToast(msg: err.toString());
-    });
+        setState(() {
+          isLoading = false;
+        });
+
+        Fluttertoast.showToast(msg: "Update success");
+      }).catchError((err) {
+        setState(() {
+          isLoading = false;
+        });
+
+        Fluttertoast.showToast(msg: err.toString());
+      });
+    }
   }
 
   @override

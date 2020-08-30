@@ -3,11 +3,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ChatApp/home.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
+import 'home.dart';
 
 class RegisterPage extends StatefulWidget {
   RegisterPage({Key key}) : super(key: key);
@@ -17,6 +17,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  //Initialize variables
   final GlobalKey<FormState> _registerFormKey = GlobalKey<FormState>();
   TextEditingController firstNameInputController;
   TextEditingController emailInputController;
@@ -31,19 +32,18 @@ class _RegisterPageState extends State<RegisterPage> {
   String photoUrl = '';
   bool isLoading = false;
   bool imageSel = false;
-
   File avatarImageFile;
 
   @override
   initState() {
     firstNameInputController = new TextEditingController();
-
     emailInputController = new TextEditingController();
     pwdInputController = new TextEditingController();
     confirmPwdInputController = new TextEditingController();
     super.initState();
   }
 
+  //Validate Email input
   String emailValidator(String value) {
     Pattern pattern =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
@@ -55,6 +55,7 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
+  //Validate Password input
   String pwdValidator(String value) {
     if (value.length < 8) {
       return 'Password must be longer than 8 characters';
@@ -63,6 +64,7 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
+  //Select image from phone
   Future getImage() async {
     imageSel = true;
     ImagePicker imagePicker = ImagePicker();
@@ -80,6 +82,7 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
+  //Upload selected image to Firebase Storage
   Future uploadFile() async {
     String fileName = id;
     StorageReference reference = FirebaseStorage.instance.ref().child(fileName);

@@ -10,6 +10,7 @@ class ForgotPasswordPage extends StatefulWidget {
 }
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+  //Initialize variables
   final GlobalKey<FormState> _registerFormKey = GlobalKey<FormState>();
 
   TextEditingController emailInputController;
@@ -22,6 +23,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     super.initState();
   }
 
+  ////Validate Email input
   String emailValidator(String value) {
     Pattern pattern =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
@@ -37,7 +39,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        //padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
           child: Container(
             height: MediaQuery.of(context).size.height,
@@ -67,7 +68,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       icon: new Icon(Icons.arrow_back),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        //Navigator.of(context).pushNamed('/login');
                       },
                     ),
                     // Actions are identified as buttons which are added at the right of App Bar

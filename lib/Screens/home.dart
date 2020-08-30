@@ -1,19 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:ChatApp/Screens/settings.dart';
+import 'package:ChatApp/Widgets/const.dart';
+import 'package:ChatApp/Widgets/loading.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:ChatApp/chat.dart';
-import 'package:ChatApp/const.dart';
-import 'package:ChatApp/settings.dart';
-import 'package:ChatApp/widget/loading.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'main.dart';
+import '../main.dart';
+import 'chat.dart';
 
 class HomeScreen extends StatefulWidget {
   final String currentUserId;
@@ -26,7 +26,7 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   HomeScreenState({Key key, @required this.currentUserId});
-
+  //Initialize variables
   final String currentUserId;
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
